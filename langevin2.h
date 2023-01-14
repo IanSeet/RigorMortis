@@ -230,17 +230,19 @@ inline void SDmin(int timesteps)
 	}
 }
 
-inline void langevinIntegratorC(int timesteps, int f, bool isChain, bool isRot, bool localNoise, bool printE)
+inline void langevinIntegratorC(int timesteps, int f, bool isChain, bool isRot, bool localNoise)
 {
 	//externalDipole = initialDipole; prevDipole = initialDipole;
 	//offsetDipole = initOffDipole; prevOffDipole = initOffDipole;
 	//isMin = 0; isEquil = 0, isMD = 1;
+	//cout << "3 figures: " << isMin << ' ' << isEquil << ' ' << isMD << '\n';
 	maxTimeStep = timesteps; expenditure = 0;
 	totV = 0; totTrot = 0; totTtrans = 0;
 	double stepV = 0, stepRot = 0, stepTrans = 0;
 	MDtrajectory.resize(timesteps/f + 1, config(RBlist, RBlistSize));
 	int i, j; vector3d x1;
-	double ratio = 1, t2;
+	double ratio = 0, t2;
+	if (isMD) ratio = 1;
 	double stepTKE, stepRKE;
 	for (i = 0; i < RBlistSize; i++)
 	{
@@ -390,13 +392,13 @@ inline void langevinIntegratorC(int timesteps, int f, bool isChain, bool isRot, 
 inline void equilibriate(int timesteps, int f)
 {
 	isMin = 0; isEquil = 1, isMD = 0;
-	langevinIntegratorC(timesteps, f, 0, 0, 1, 1);
+	langevinIntegratorC(timesteps, f, 0, 0, 1);
 }
 
 inline void roteq(int timesteps, int f)
 {
 	isMin = 0; isEquil = 1, isMD = 0;
-	langevinIntegratorC(timesteps, f, 0, 1, 1, 1);
+	langevinIntegratorC(timesteps, f, 0, 1, 1);
 }
 
 inline void areq(int timesteps, int f)
@@ -404,7 +406,7 @@ inline void areq(int timesteps, int f)
 	externalDipole = initialDipole; prevDipole = initialDipole;
 	offsetDipole = initOffDipole; prevOffDipole = initOffDipole;
 	isMin = 0; isEquil = 0, isMD = 0;
-	langevinIntegratorC(timesteps, f, 0, 0, 1, 1);
+	langevinIntegratorC(timesteps, f, 0, 0, 1);
 }
 
 inline void langevinIntegrator(int timesteps, int f, bool isChain)
@@ -412,7 +414,7 @@ inline void langevinIntegrator(int timesteps, int f, bool isChain)
 	externalDipole = initialDipole; prevDipole = initialDipole;
 	offsetDipole = initOffDipole; prevOffDipole = initOffDipole;
 	isMin = 0; isEquil = 0, isMD = 1;
-	langevinIntegratorC(timesteps, f, isChain, 1, 1, 1);
+	langevinIntegratorC(timesteps, f, isChain, 1, 1);
 }
 
 inline void noiselessIntegrator(int timesteps, int f)
@@ -420,5 +422,5 @@ inline void noiselessIntegrator(int timesteps, int f)
 	externalDipole = initialDipole; prevDipole = initialDipole;
 	offsetDipole = initOffDipole; prevOffDipole = initOffDipole;
 	isMin = 0; isEquil = 0, isMD = 1;
-	langevinIntegratorC(timesteps, f, 0, 1, 0, 1);
+	langevinIntegratorC(timesteps, f, 0, 1, 0);
 }
