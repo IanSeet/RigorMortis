@@ -309,10 +309,10 @@ inline void langevinIntegratorC(int timesteps, int f, bool isChain, bool isRot, 
 				rigidBody &rb = RBlist[i]; rb.convertTorque();
 				rb.momentum += rb.force*h;
 				rb.angmom = rb.angmom + rb.qtorque*h;
+				stepRKE = rotationalKE(rb);
+				stepTKE = translationalKE(rb);
 				if (isMD)
 				{
-					stepRKE = rotationalKE(rb);
-					stepTKE = translationalKE(rb);
 					sumRKE += stepRKE;
 					sumTKE += stepTKE;
 				}

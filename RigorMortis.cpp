@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 		int seed = time(NULL) + rng;
 		srand(seed); //cout << seed << '\n';
 	}
-	if (s == "unitTest") {srand(0); isTest = 1;}
+	if (s.find("unitTest") != string::npos) {srand(0); isTest = 1;}
 	if (isTest) redirectCout = 1;
 	ofstream coutput("cout");
 	streambuf *coutbuf = cout.rdbuf(); //save old buf
